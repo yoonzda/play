@@ -5,7 +5,7 @@ import { BookCard } from '@/components/BookCard';
 
 export const dynamic = 'force-dynamic'; // 실시간 DB 데이터 반영을 위한 Next.js 캐싱 무력화
 
-const CATEGORY_ORDER = ['일상', '영감', '학습', '소설', '기타'];
+const CATEGORY_ORDER = ['일상', '문장', '업무', '프로젝트', '작업'];
 
 // 가장 바깥쪽의 세로 나무 기둥 (고급 나이테 질감 유지)
 const WOOD_WALL_STYLE = {
@@ -61,7 +61,7 @@ export default async function Home() {
   });
 
   const groupedPosts = posts.reduce((acc, post: any) => {
-    const cat = post.category || '기타';
+    const cat = post.category || '작업';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(post);
     return acc;
@@ -78,11 +78,11 @@ export default async function Home() {
   return (
     <PageRoot>
       <Header 
-        title="나의 서재" 
+        title="윤지서점" 
         rightContent={<WriteMemoButton href="/admin" />} 
       />
       <ContentContainer>
-        <div className="w-full flex flex-col mb-40 shadow-[0_30px_60px_rgba(0,0,0,0.2)] rounded-[2px]" style={WOOD_WALL_STYLE}>
+        <div className="w-full flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.2)] rounded-[2px]" style={WOOD_WALL_STYLE}>
           
           <div className="w-full h-[18px] relative z-30" style={WOOD_SHELF_STYLE}></div>
 

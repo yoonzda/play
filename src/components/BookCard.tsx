@@ -22,32 +22,32 @@ const PALETTES: Record<string, { bg: string; text: string }[]> = {
     { bg: 'bg-[#B09983]', text: 'text-[#F5EFEA]' }, 
     { bg: 'bg-[#DEB895]', text: 'text-[#6A5A4A]' }, 
   ],
-  // [영감] 활기찬 톤다운 브릭 오렌지 (미세한 살구빛 웜오렌지 변주)
-  '영감': [
+  // [문장] 활기찬 톤다운 브릭 오렌지 (미세한 살구빛 웜오렌지 변주)
+  '문장': [
     { bg: 'bg-[#CA6E5A]', text: 'text-[#FDF2F0]' }, 
     { bg: 'bg-[#E38F6B]', text: 'text-[#FDF5EB]' }, 
     { bg: 'bg-[#BD5959]', text: 'text-[#FBE5E5]' }, 
     { bg: 'bg-[#C2824C]', text: 'text-[#4A3414]' }, 
     { bg: 'bg-[#D68A6B]', text: 'text-[#FAF5F2]' }, 
   ],
-  // [학습] 차분한 다크 블루 네이비 계열 (미세한 청록빛 틴트 한 방울 변주)
-  '학습': [
+  // [업무] 차분한 다크 블루 네이비 계열 (미세한 청록빛 틴트 한 방울 변주)
+  '업무': [
     { bg: 'bg-[#4B6A8A]', text: 'text-[#F0F4F8]' }, 
     { bg: 'bg-[#3C5778]', text: 'text-[#E5EDF5]' }, 
     { bg: 'bg-[#6D8DA6]', text: 'text-[#F4F7F9]' }, 
     { bg: 'bg-[#456A7A]', text: 'text-[#E9F0F7]' }, 
     { bg: 'bg-[#55698A]', text: 'text-[#F8FAFC]' }, 
   ],
-  // [소설] 다크한 신비주의 숲색 & 퍼플 계열 (미세한 더스티 채도 차이)
-  '소설': [
+  // [프로젝트] 다크한 신비주의 숲색 & 퍼플 계열 (미세한 더스티 채도 차이)
+  '프로젝트': [
     { bg: 'bg-[#5B455B]', text: 'text-[#F9F0F9]' }, 
     { bg: 'bg-[#483B4A]', text: 'text-[#EFE5EF]' }, 
     { bg: 'bg-[#7A4B5A]', text: 'text-[#FCF0F3]' }, 
     { bg: 'bg-[#46544A]', text: 'text-[#E8EFE9]' }, 
     { bg: 'bg-[#735A73]', text: 'text-[#FAF0FA]' }, 
   ],
-  // [기타] 무채색 모노톤 계열 (따뜻한 웜그레이와 쿨그레이 교차)
-  '기타': [
+  // [작업] 무채색 모노톤 계열 (따뜻한 웜그레이와 쿨그레이 교차)
+  '작업': [
     { bg: 'bg-[#707070]', text: 'text-[#F2F2F2]' }, 
     { bg: 'bg-[#525252]', text: 'text-[#EAE8E6]' }, 
     { bg: 'bg-[#8F877F]', text: 'text-[#FCFBF9]' }, 
@@ -88,7 +88,7 @@ export function BookCard({ post }: { post: Post }) {
   
   const randomFactor = getHash(post.title + post.id);
 
-  const palette = PALETTES[post.category] || PALETTES['기타'];
+  const palette = PALETTES[post.category] || PALETTES['작업'];
   const theme = palette[randomFactor % palette.length];
 
   const assignedHeight = 'h-[240px]';

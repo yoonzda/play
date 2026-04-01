@@ -17,8 +17,8 @@ export async function POST(request: Request) {
       data: {
         title,
         content,
-        // 새로 추가된 카테고리를 저장 (없으면 강제 '기타' 부여)
-        category: category || "기타" 
+        // 새로 추가된 카테고리를 저장 (없으면 강제 '작업' 부여)
+        category: category || "작업"
       },
     });
 
