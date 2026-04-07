@@ -19,8 +19,8 @@ export function Header({ title, rightContent }: { title: string; rightContent?: 
             {/* 그림자 (길이가 짧아진 깍두기 몸통 길이에 맞춰서 비율 더 축소) */}
             <div className="absolute top-[35px] md:top-[42px] left-[5px] w-[80px] md:w-[94px] h-[8px] md:h-[10px] bg-black/15 blur-[4px] rounded-[100%] origin-left transform -rotate-[1deg]"></div>
             
-            {/* 1. 도장 몸통 (도장 자국 규격과 두꺼운 높이는 일치하게 두고, 길이는 깍둑썰기 한 돌멩이처럼 초압축) */}
-            <div className="w-[80px] h-[40px] md:w-[94px] md:h-[48px] bg-gradient-to-r from-[#D7CDBB] via-[#E8DEC9] to-[#C9BAA3] rounded-[4px] shadow-[inset_0_2px_4px_rgba(255,255,255,0.6),_inset_0_-4px_6px_rgba(0,0,0,0.08)] transform rotate-[1.5deg] relative box-border border border-[#C5B7A1]">
+            {/* 1. 화이트 갤러리 톤에 맞춘 밝은 백색 대리석 느낌의 도장 돌멩이 */}
+            <div className="w-[80px] h-[40px] md:w-[94px] md:h-[48px] bg-gradient-to-r from-[#F0EBE1] via-[#F8F6F2] to-[#E6DFD4] rounded-[4px] shadow-[inset_0_2px_6px_rgba(255,255,255,0.8),_inset_0_-4px_6px_rgba(0,0,0,0.05)] transform rotate-[1.5deg] relative box-border border border-[#DCD6D0]">
               
               {/* 2. 도장 찍는 돌의 끝면(오른쪽)에 얕게 스며든 붉은 인주 자국 - 더 작고, 연하고, 돌 표면에 자연스럽게 번진 디테일 */}
               <div className="absolute top-[0] right-[0] w-[6px] md:w-[8px] h-full bg-gradient-to-r from-transparent to-[#A62B2B] rounded-r-[3px] opacity-50 mix-blend-multiply blur-[0.5px]"></div>
@@ -55,5 +55,5 @@ export function Header({ title, rightContent }: { title: string; rightContent?: 
 
 export function ContentContainer({ children }: { children: ReactNode }) {
   {/* 화면 전체 너비를 광활하게 사용하도록 레이아웃 제약 해제 (max-w-[2000px]) */}
-  return <div className="w-full max-w-[2000px] mx-auto px-6 md:px-12 py-12 md:py-20">{children}</div>;
+  return <div className="w-full max-w-[2000px] mx-auto px-6 md:px-12 pt-12 pb-0 md:pt-20 md:pb-0">{children}</div>;
 }

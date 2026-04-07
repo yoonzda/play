@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-
+import { Eraser, Trash2, X } from 'lucide-react';
 type Post = {
   id: number;
   title: string;
@@ -12,51 +12,37 @@ type Post = {
   createdAt: Date;
 };
 
-// [업데이트] 고객 니즈 반영: 촌스러운 알록달록함을 빼고, 다시 카테고리 본래의 고급스럽고 탁한 톤(Tone-on-tone)으로 묶되, 식별은 되게끔 미세한 명도차 추가
+// 모던 화이트 갤러리 감성을 살린 미니멀 화이트/아이보리/그레이 톤 통합 팔레트
+// 색상을 하얀 톤으로 통일해 가장 책장답고 깔끔한 갤러리를 만듭니다.
 const PALETTES: Record<string, { bg: string; text: string }[]> = {
-  // [일상] 포근한 라떼 베이지 계열 (미세한 핑크빛, 아몬드빛 변주)
+  // [일상] 퓨어 화이트 & 웜 아이보리
   '일상': [
-    { bg: 'bg-[#CFAFA8]', text: 'text-[#4A322C]' }, 
-    { bg: 'bg-[#C9A687]', text: 'text-[#FCF6F0]' }, 
-    { bg: 'bg-[#A89885]', text: 'text-[#FCEFE3]' }, 
-    { bg: 'bg-[#B09983]', text: 'text-[#F5EFEA]' }, 
-    { bg: 'bg-[#DEB895]', text: 'text-[#6A5A4A]' }, 
+    { bg: 'bg-[#FFFFFF]', text: 'text-[#2E2C2B]' }, 
+    { bg: 'bg-[#FAFAFA]', text: 'text-[#2E2C2B]' }, 
   ],
-  // [문장] 활기찬 톤다운 브릭 오렌지 (미세한 살구빛 웜오렌지 변주)
+  // [문장] 따뜻한 크림 & 라이트 베이지
   '문장': [
-    { bg: 'bg-[#CA6E5A]', text: 'text-[#FDF2F0]' }, 
-    { bg: 'bg-[#E38F6B]', text: 'text-[#FDF5EB]' }, 
-    { bg: 'bg-[#BD5959]', text: 'text-[#FBE5E5]' }, 
-    { bg: 'bg-[#C2824C]', text: 'text-[#4A3414]' }, 
-    { bg: 'bg-[#D68A6B]', text: 'text-[#FAF5F2]' }, 
+    { bg: 'bg-[#FDF9F1]', text: 'text-[#3B3431]' }, 
+    { bg: 'bg-[#FCF5E8]', text: 'text-[#3B3431]' }, 
   ],
-  // [업무] 차분한 다크 블루 네이비 계열 (미세한 청록빛 틴트 한 방울 변주)
+  // [업무] 맑은 라이트 펄 그레이
   '업무': [
-    { bg: 'bg-[#4B6A8A]', text: 'text-[#F0F4F8]' }, 
-    { bg: 'bg-[#3C5778]', text: 'text-[#E5EDF5]' }, 
-    { bg: 'bg-[#6D8DA6]', text: 'text-[#F4F7F9]' }, 
-    { bg: 'bg-[#456A7A]', text: 'text-[#E9F0F7]' }, 
-    { bg: 'bg-[#55698A]', text: 'text-[#F8FAFC]' }, 
+    { bg: 'bg-[#F4F4F4]', text: 'text-[#33383B]' }, 
+    { bg: 'bg-[#EEEEEE]', text: 'text-[#2C3134]' }, 
   ],
-  // [프로젝트] 다크한 신비주의 숲색 & 퍼플 계열 (미세한 더스티 채도 차이)
+  // [프로젝트] 페일 아몬드 화이트 (미세하게 따뜻한 회색)
   '프로젝트': [
-    { bg: 'bg-[#5B455B]', text: 'text-[#F9F0F9]' }, 
-    { bg: 'bg-[#483B4A]', text: 'text-[#EFE5EF]' }, 
-    { bg: 'bg-[#7A4B5A]', text: 'text-[#FCF0F3]' }, 
-    { bg: 'bg-[#46544A]', text: 'text-[#E8EFE9]' }, 
-    { bg: 'bg-[#735A73]', text: 'text-[#FAF0FA]' }, 
+    { bg: 'bg-[#F2ECE4]', text: 'text-[#363025]' }, 
+    { bg: 'bg-[#EAE3DA]', text: 'text-[#363025]' }, 
   ],
-  // [작업] 무채색 모노톤 계열 (따뜻한 웜그레이와 쿨그레이 교차)
+  // [작업] 매트한 본 화이트 (Bone White)
   '작업': [
-    { bg: 'bg-[#707070]', text: 'text-[#F2F2F2]' }, 
-    { bg: 'bg-[#525252]', text: 'text-[#EAE8E6]' }, 
-    { bg: 'bg-[#8F877F]', text: 'text-[#FCFBF9]' }, 
-    { bg: 'bg-[#404040]', text: 'text-[#D9D9D9]' }, 
-    { bg: 'bg-[#999490]', text: 'text-[#2B2927]' }, 
+    { bg: 'bg-[#EBE9E4]', text: 'text-[#222222]' }, 
+    { bg: 'bg-[#E4E2DD]', text: 'text-[#222222]' }, 
   ],
 };
 
-export function BookCard({ post }: { post: Post }) {
+export function BookCard({ post, variant = 'spine' }: { post: Post, variant?: 'spine' | 'list' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -100,94 +86,89 @@ export function BookCard({ post }: { post: Post }) {
 
   return (
     <>
-      <button 
-        onClick={() => setIsOpen(true)}
-        title={post.title}
-        className={`group relative flex flex-col justify-end w-[46px] sm:w-[50px] ${assignedHeight} ${theme.bg} rounded-[2px] 
-          transition-transform duration-[400ms] ease-out shrink-0 z-10 hover:z-30 
-          hover:-translate-y-5 hover:brightness-105
-          shadow-[inset_3px_0_6px_rgba(255,255,255,0.15),inset_-3px_0_6px_rgba(0,0,0,0.15),2px_0_4px_rgba(0,0,0,0.1)]`}
-        style={{ willChange: 'transform' }}
-      >
-        <div className="absolute top-0 left-0 right-0 h-[4px] bg-[#E8E1DA] rounded-t-[2px] shadow-[inset_0_-1px_1px_rgba(0,0,0,0.1)]"></div>
+      {variant === 'spine' ? (
+        <button 
+          onClick={() => setIsOpen(true)}
+          title={post.title}
+          className={`group relative flex flex-col justify-end w-[46px] sm:w-[50px] ${assignedHeight} ${theme.bg} rounded-[2px] 
+            transition-transform duration-[400ms] ease-out shrink-0 z-10 hover:z-50 
+            hover:-translate-y-5 hover:brightness-105 border border-[#E0DCD6]
+            shadow-[inset_3px_0_6px_rgba(255,255,255,0.6),inset_-3px_0_6px_rgba(0,0,0,0.03),4px_0_10px_rgba(0,0,0,0.06)]`}
+          style={{ willChange: 'transform' }}
+        >
 
-        <div className="absolute top-5 left-0 right-0 h-[2px] bg-black/15 shadow-[0_4px_0_rgba(255,255,255,0.1)]"></div>
-        <div className="absolute top-7 left-0 right-0 h-[1px] bg-black/10"></div>
-        
-        <div className="flex-1 w-full flex items-center justify-center mt-6 mb-12 px-[2px]">
-          <div 
-            className={`font-heading text-[13px] sm:text-[14px] font-bold ${theme.text} tracking-wider drop-shadow-[0_1px_1px_rgba(0,0,0,0.4)] opacity-95`}
-            style={{ writingMode: 'vertical-rl' }}
-          >
-            {displayTitle}
+          {/* 화이트 갤러리 톤다운 방지 및 입체감 미세선 */}
+          <div className="absolute top-0 left-0 right-0 h-[4px] bg-white rounded-t-[2px] shadow-[inset_0_-1px_1px_rgba(0,0,0,0.03)]"></div>
+          <div className="absolute top-5 left-0 right-0 h-[1.5px] bg-black/5 shadow-[0_4px_0_rgba(255,255,255,0.5)]"></div>
+          
+          <div className="flex-1 w-full flex items-center justify-center mt-6 mb-8 px-[2px]">
+            <div 
+              className={`font-heading text-[13px] sm:text-[14px] font-bold ${theme.text} tracking-wider opacity-90`}
+              style={{ writingMode: 'vertical-rl' }}
+            >
+              {displayTitle}
+            </div>
+          </div>
+          
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center opacity-85">
+             {/* 허여멀건함을 잡아주기 위해 도장과 어울리는 붉은색 타이포그래피 포인트 (과하지 않음) */}
+             <span className={`text-[9px] font-bold text-[#C23C3C] uppercase tracking-widest`}>
+               {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
+             </span>
+          </div>
+        </button>
+      ) : (
+        <div onClick={() => setIsOpen(true)} className="w-full flex justify-between items-center py-4 sm:py-5 border-b border-[#EAE5DF] hover:bg-white cursor-pointer px-2 sm:px-4 transition-colors">
+          <div className="relative flex-1 flex flex-col items-start gap-1">
+            <span className="font-bold text-[#111] text-[15px] sm:text-[17px] tracking-wide leading-snug whitespace-normal break-words break-keep w-full pr-2">{post.title || '무제'}</span>
+            <span className="text-[#A89895] text-[12px] sm:text-[13px] tracking-widest font-mono uppercase mt-1">
+              {new Date(post.createdAt).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\.\s*$/, '').replace(/\./g, '/').replace(/ /g, '')}
+            </span>
           </div>
         </div>
+      )}
 
-        <div className="absolute bottom-10 left-0 right-0 h-[2px] bg-black/15 shadow-[0_-4px_0_rgba(255,255,255,0.1)]"></div>
-        <div className="absolute bottom-8 left-0 right-0 h-[1px] bg-black/10"></div>
-        
-        <div className="absolute bottom-3 left-0 right-0 flex justify-center opacity-85">
-           <span className={`text-[9px] font-bold ${theme.text} uppercase tracking-widest`}>
-             {new Date(post.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })}
-           </span>
-        </div>
-      </button>
-
-      {/* 내부 스크롤 (제목/헤더와 하단 메뉴바는 스크롤되지 않고 픽스되도록 레이아웃 flex-col 로 전면 수정) */}
+      {/* 내부 팝업 (미니멀 갤러리 폼) */}
       {isOpen && mounted && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-[#2B2928]/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="absolute inset-0 cursor-pointer" onClick={() => setIsOpen(false)}></div>
           
-          <div className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-white border border-[#F0EBE1] shadow-[0_30px_60px_rgba(0,0,0,0.12)] rounded overflow-hidden animate-in zoom-in-95 duration-400 ease-[cubic-bezier(0.2,1,0.2,1)]">
+          <div className="relative w-[95vw] sm:w-[90vw] md:w-[80vw] lg:w-[60vw] max-w-[850px] h-[90vh] md:h-[85vh] flex flex-col bg-white shadow-[0_40px_100px_rgba(0,0,0,0.12)] rounded-[2px] overflow-hidden animate-in zoom-in-95 duration-500 ease-[cubic-bezier(0.2,1,0.2,1)]">
             
             <button 
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 sm:top-6 right-4 sm:right-6 w-10 h-10 flex items-center justify-center text-[#A89895] hover:text-[#DE6A60] transition-colors hover:bg-[#FCE4E1] rounded-full text-[20px] z-10"
+              className="absolute top-6 right-6 sm:top-8 sm:right-8 w-12 h-12 flex items-center justify-center text-[#A89895] hover:text-[#111] transition-colors rounded-full z-50 bg-white/80 backdrop-blur-sm"
             >
-              ✕
+              <X size={24} strokeWidth={1.5} />
             </button>
             
-            {/* 고정되는 헤더(제목) 영역 */}
-            <div className="shrink-0 pt-8 sm:pt-12 px-6 sm:px-14 pb-6 border-b border-[#F3EFE9] bg-white">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-3 py-1 bg-[#FCF8F2] text-[#A68F7B] font-bold text-[12px] rounded-full tracking-wider border border-[#F0EBE1]">{post.category}</span>
-                <time className="font-body text-[#A89895] text-[13px] sm:text-[14px] tracking-wide">
-                  {new Date(post.createdAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' })}
-                  {' · '}
-                  {new Date(post.createdAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-                </time>
-              </div>
-              <h1 className="font-heading text-[2.2rem] sm:text-[2.8rem] tracking-tight font-bold text-[#1A1817] leading-[1.2] pr-10">
-                {post.title}
-              </h1>
+            {/* 가름끈 (고전적인 패브릭 컷 북마크 디자인) - 제목을 가리지 않도록 좌측 끝 텅 빈 여백에 배치 (극단적이지 않게!) */}
+            <div className="absolute top-0 left-4 sm:left-6 md:left-10 w-3.5 h-24 md:h-32 bg-[#A62B2B] shadow-md z-[60] origin-top transform"
+                 style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 8px), 0 100%)' }}>
             </div>
 
-            {/* 스크롤 가능한 본문 영역 */}
-            <div className="flex-1 overflow-y-auto px-6 sm:px-14 py-8 bg-white/50">
-              <div className="prose prose-lg max-w-none min-h-[40vh] flex flex-col">
-                <p className="font-body text-[#3A3837] text-[17px] sm:text-[18px] leading-[2.2] whitespace-pre-wrap pb-10 flex-1">
-                  {post.content}
-                </p>
-                
-                {/* 하단 서명 (기록 일시) */}
-                <div className="mt-8 pt-8 border-t border-[#F3EFE9]/60 text-right opacity-80">
-                   <p className="font-body text-[#8C7A70] text-[13px] sm:text-[14px] italic tracking-widest">
-                      Written on {new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                   </p>
+            {/* 1. 헤더 영역 (고정, Scrollbar 끝부분과 완벽히 일치하도록 풀 가로폭 border 적용) */}
+            <div className="w-full shrink-0 px-8 sm:px-14 md:px-20 pt-16 md:pt-20 pb-6 z-10 bg-white border-b border-[#F0EBE1]">
+              <div className="w-full max-w-[700px] mx-auto relative">
+                <h1 className="font-heading text-[1.8rem] md:text-[2.2rem] tracking-tight font-bold text-[#111] leading-[1.3] break-keep pr-10">
+                  {post.title}
+                </h1>
+              </div>
+            </div>
+
+            {/* 2. 스크롤 가능한 본문 영역 */}
+            <div className="w-full flex-1 overflow-y-auto px-8 sm:px-14 md:px-20 py-8 custom-scrollbar">
+              <div className="w-full max-w-[700px] mx-auto">
+                <div className="text-[#2B2928] text-[15px] sm:text-[16px] leading-[1.8] tracking-[0.01em] font-body break-keep whitespace-pre-wrap">
+                  {/* 단락 나누기를 위한 빈 줄(엔터) 입력 의도가 명확히 반영되도록 빈 줄을 h-6 간격으로 렌더링 */}
+                  {post.content.split('\n').map((line, i) => (
+                    line.trim() !== '' ? <p key={i} className="mb-1">{line}</p> : <div key={i} className="h-6"></div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* 하단에 고정되는 푸터 바 */}
-            <div className="shrink-0 py-5 px-6 sm:px-14 bg-[#FCFCFA] border-t border-[#F3EFE9] flex justify-end">
-              <button 
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="font-heading px-4 py-2 text-[#C2B9B4] hover:text-[#9A918C] text-[14px] font-bold transition-colors disabled:opacity-50 flex items-center gap-2"
-              >
-                {isDeleting ? '정리 중...' : '도서관에서 비우기'}
-              </button>
-            </div>
+            {/* 3. 하단 액션 영역 (사용자 요청으로 삭제됨, 오직 본문 콘텐츠 뷰어 역할에 집중) */}
             
           </div>
         </div>,
